@@ -5,8 +5,7 @@ import pytest
 
 @pytest.fixture
 def hours(request: Any) -> Any:
-    """Содержит набор тестовых данных с корректными номерами банковских карт
-    для тестирования функции src.views.get_greeting"""
+    """Содержит набор тестовых данных для тестирования функции src.views.get_greeting"""
 
     tests = [
         {"input": "00", "output": "Доброй ночи"},
