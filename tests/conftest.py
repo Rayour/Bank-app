@@ -19,8 +19,8 @@ def hours(request: Any) -> Any:
 
 
 @pytest.fixture
-def df_operations(request: Any) -> Any:
-    """Данные для тестирования функции src.utils.get_cards_total_info"""
+def df_date_operations(request: Any) -> Any:
+    """Данные для тестирования функции src.utils.get_df_by_dates"""
 
     date1 = datetime.datetime.strptime("2025-12-01", "%Y-%m-%d")
     date2 = datetime.datetime.strptime("2025-12-02", "%Y-%m-%d")
@@ -28,12 +28,34 @@ def df_operations(request: Any) -> Any:
     tests = [
         {
             "input": (pd.DataFrame({
-                "Дата платежа": [date1, date1, date1, date1, date2],
-                "Статус": ["OK", "OK", "OK", "FAILED", "OK"],
-                "Сумма платежа": [-100.0, -100.0, 100.0, -100.0, -100.0],
-                "Номер карты": ["*1111", "*2222", "*1111", "*2222", "*2222"],
-                "Кэшбэк": [1.0, 0.0, 1.0, 1.0, 1.0]
+                "Дата платежа": [date1, date2],
+                "Сумма платежа": [-100.0, 100.0],
+                "Номер карты": ["*1111", "*2222"],
+                "Кэшбэк": [1.0, 0.0]
             }), "2025-12-01"),
+            "output": {
+                "Дата платежа": {0: date1},
+                "Сумма платежа": {0: -100.0},
+                "Номер карты": {0: '*1111'},
+                "Кэшбэк": {0: 1.0}
+            }
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
+def df_operations(request: Any) -> Any:
+    """Данные для тестирования функции src.utils.get_cards_total_info"""
+
+    tests = [
+        {
+            "input": pd.DataFrame({
+                "Статус": ["OK", "OK", "OK", "FAILED"],
+                "Сумма платежа": [-100.0, -100.0, 100.0, -100.0],
+                "Номер карты": ["*1111", "*2222", "*1111", "*2222"],
+                "Кэшбэк": [1.0, 0.0, 1.0, 1.0]
+            }),
             "output": [
                 {
                     "last_digits": "1111",
@@ -44,6 +66,58 @@ def df_operations(request: Any) -> Any:
                     "last_digits": "2222",
                     "total_spent": 100.0,
                     "cashback": 0.0
+                }
+            ]
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_sort(request: Any) -> Any:
+    """Данные для тестирования функции src.utils.get_top_five_transactions"""
+
+    date1 = datetime.datetime.strptime("2025-12-01", "%Y-%m-%d")
+
+    tests = [
+        {
+            "input": pd.DataFrame({
+                "Дата платежа": [date1, date1, date1, date1, date1, date1],
+                "Сумма операции с округлением": [200.0, 300.0, 100.0, 600.0, 500.0, 400.0],
+                "Сумма операции": [-200.0, -300.0, 100.0, -600.0, 500.0, -400.0],
+                "Категория": ["Супермаркеты", "Переводы", "Пополнения", "Рестораны", "Пополнения", "Рестораны"],
+                "Описание": ["Описание 1", "Описание 2", "Описание 3", "Описание 4", "Описание 5", "Описание 6"]
+            }),
+            "output": [
+                {
+                    'date': '01.12.2025',
+                    'amount': -600.0,
+                    'category': 'Рестораны',
+                    'description': 'Описание 4'
+                },
+                {
+                    'date': '01.12.2025',
+                    'amount': 500.0,
+                    'category': 'Пополнения',
+                    'description': 'Описание 5'
+                },
+                {
+                    'date': '01.12.2025',
+                    'amount': -400.0,
+                    'category': 'Рестораны',
+                    'description': 'Описание 6'
+                },
+                {
+                    'date': '01.12.2025',
+                    'amount': -300.0,
+                    'category': 'Переводы',
+                    'description': 'Описание 2'
+                },
+                {
+                    'date': '01.12.2025',
+                    'amount': -200.0,
+                    'category': 'Супермаркеты',
+                    'description': 'Описание 1'
                 }
             ]
         }
