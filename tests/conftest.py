@@ -123,3 +123,42 @@ def df_operations_for_sort(request: Any) -> Any:
         }
     ]
     return tests[request.param]
+
+
+@pytest.fixture
+def valute_rates(request: Any) -> Any:
+    """Данные для тестирования функции src.external_api.get_currency_rate"""
+
+    mocked_data = {
+        "Valute": {
+            "USD": {
+                "ID": "R01235",
+                "NumCode": "840",
+                "CharCode": "USD",
+                "Nominal": 1,
+                "Name": "Доллар США",
+                "Value": 78.7135,
+                "Previous": 78.5067
+            },
+            "EUR": {
+                "ID": "R01239",
+                "NumCode": "978",
+                "CharCode": "EUR",
+                "Nominal": 1,
+                "Name": "Евро",
+                "Value": 90.7548,
+                "Previous": 90.9438
+            },
+        }
+    }
+
+    tests = [
+        {
+            "input": {
+                "currencies": ["EUR", "USD"],
+                "mocked_data": mocked_data
+            },
+            "output": [{'currency': 'EUR', 'rate': 90.7548}, {'currency': 'USD', 'rate': 78.7135}]
+        }
+    ]
+    return tests[request.param]
