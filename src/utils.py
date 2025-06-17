@@ -101,11 +101,13 @@ def get_top_five_transactions(df: pd.DataFrame) -> list[dict]:
     """Функция получает датафрейм с данными и дату для выборки,
     возвращает топ-5 транзакций по сумме платежа за период с начала месяца до указанной даты"""
 
+    logger.info("Получаем топ-5 операций по сумме платежа")
     sorted_df = df.sort_values("Сумма операции с округлением", ascending=False)
     top_five_df = sorted_df.iloc[0:5]
     top_five_operations_full_list = json.loads(top_five_df.to_json(orient='records'))
     top_five_operations_list = []
 
+    logger.info("Формируем ответ")
     for operation in top_five_operations_full_list:
         ts = operation["Дата платежа"] // 1000
         short_operation = {
