@@ -162,3 +162,30 @@ def valute_rates(request: Any) -> Any:
         }
     ]
     return tests[request.param]
+
+
+@pytest.fixture
+def company_share(request: Any) -> Any:
+    """Данные для тестирования функции src.external_api.get_stock_price"""
+
+    mocked_data = {
+        "Meta Data": {
+            "3. Last Refreshed": "2025-06-16",
+        },
+        "Time Series (Daily)": {
+            "2025-06-16": {
+                "1. open": "174.7300",
+            }
+        }
+    }
+
+    tests = [
+        {
+            "input": {
+                "company": "GOOGL",
+                "mocked_data": mocked_data
+            },
+            "output": {'stock': 'GOOGL', 'price': 174.73}
+        }
+    ]
+    return tests[request.param]
