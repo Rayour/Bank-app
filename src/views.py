@@ -72,4 +72,5 @@ def main_view(date_str: str) -> dict:
     return result
 
 
-print(main_view("2025-12-12 18:13:43"))
+if __name__ == "__main__":
+    print(main_view("2025-12-12 18:13:43"))
