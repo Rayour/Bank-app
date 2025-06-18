@@ -121,6 +121,23 @@ def get_top_five_transactions(df: pd.DataFrame) -> list[dict]:
     return top_five_operations_list
 
 
+def get_user_settings() -> dict:
+    """Функция возвращает настройки пользователя из конфига user_settings.json"""
+
+    user_settings_url = os.path.join(ROOT_PATH, 'user_settings.json')
+    logger.info("Получение пользовательских настроек...")
+    try:
+        logger.info(f"Попытка чтения файла {user_settings_url}")
+        with open(user_settings_url, "r", encoding="utf-8") as json_file:
+            logger.info(f"Получение JSON из файла {user_settings_url}")
+            user_settings = dict(json.load(json_file))
+    except FileNotFoundError:
+        logger.error(f"Файл {user_settings_url} не найден. Настройки пользователя будут пустыми.")
+        user_settings = dict(json.loads('{"user_currencies": [], "user_stocks": []}'))
+
+    return user_settings
+
+
 if __name__ == "__main__":
     df = get_operations(os.path.join('data', 'operations.xlsx'))
     if isinstance(df, pandas.DataFrame):

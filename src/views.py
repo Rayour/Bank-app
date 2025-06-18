@@ -1,27 +1,8 @@
-import datetime
-import json
-import logging
 import os
-from pathlib import Path
 
 import pandas
 
 from src import external_api, utils
-
-ROOT_PATH = Path(__file__).resolve().parents[1]
-date_today = datetime.datetime.today().strftime("%d-%m-%Y")
-file_name = f"{date_today}_logs.log"
-log_path = os.path.join(ROOT_PATH, "logs", file_name)
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    filename=log_path,
-    filemode="a",
-    encoding="utf-8",
-)
-logger = logging.getLogger("view")
 
 
 def main_view(date_str: str) -> dict:
@@ -33,16 +14,7 @@ def main_view(date_str: str) -> dict:
     4. курсы валют
     5. стоимость акций"""
 
-    user_settings_url = os.path.join(ROOT_PATH, 'user_settings.json')
-    logger.info("Получение пользовательских настроек...")
-    try:
-        logger.info(f"Попытка чтения файла {user_settings_url}")
-        with open(user_settings_url, "r", encoding="utf-8") as json_file:
-            logger.info(f"Получение JSON из файла {user_settings_url}")
-            user_settings = json.load(json_file)
-    except FileNotFoundError:
-        logger.error(f"Файл {user_settings} не найден. Настройки пользователя будут пустыми.")
-        user_settings = json.loads('{"user_currencies": [], "user_stocks": []}')
+    user_settings = utils.get_user_settings()
 
     date_date = date_str[:10]
     date_time_hours = date_str[11:13]
