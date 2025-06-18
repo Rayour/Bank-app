@@ -232,3 +232,27 @@ def transactions_list(request: Any) -> Any:
         }
     ]
     return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_spending_by_category(request: Any) -> Any:
+    """Данные для тестирования функции src.reports.spending_by_category"""
+
+    date1 = datetime.datetime.strptime("2025-12-05", "%Y-%m-%d")
+    date2 = datetime.datetime.strptime("2025-11-05", "%Y-%m-%d")
+    date3 = datetime.datetime.strptime("2025-10-05", "%Y-%m-%d")
+    date4 = datetime.datetime.strptime("2025-09-05", "%Y-%m-%d")
+
+    tests = [
+        {
+            "input": (pd.DataFrame({
+                "Дата платежа": [date1, date2, date3, date4],
+                "Категория": ["Рестораны", "Пополнения", "Переводы", "Рестораны"],
+            }), "Пополнения", "2025-12-10"),
+            "output": {
+                "Дата платежа": {1: date2},
+                "Категория": {1: "Пополнения"}
+            }
+        }
+    ]
+    return tests[request.param]
