@@ -200,3 +200,35 @@ def df_operations_for_cashback(request: Any) -> Any:
         }
     ]
     return tests[request.param]
+
+
+@pytest.fixture
+def transactions_list(request: Any) -> Any:
+    """Данные для тестирования функции src.services.investment_bank"""
+
+    transactions = [
+        {
+            "date": "2025-12-01",
+            "amount": -245.5
+        },
+        {
+            "date": "2025-12-02",
+            "amount": -215.5
+        },
+        {
+            "date": "2025-11-01",
+            "amount": -205.5
+        },
+        {
+            "date": "2025-12-01",
+            "amount": 245.5
+        },
+    ]
+
+    tests = [
+        {
+            "input": ("2025-12", transactions, 50),
+            "output": 39.0
+        }
+    ]
+    return tests[request.param]

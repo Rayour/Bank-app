@@ -48,6 +48,19 @@ def get_good_cashback_categories(data: pd.DataFrame, year: int, month: int) -> d
     return spends_dict
 
 
+def investment_bank(month: str, transactions: list[dict], limit: int) -> float:
+    """Функция получает месяц ('YYYY-MM'), список транзакций и лимит округления.
+    Возвращает сумму, которую можно было бы накопить за данный месяц с указанным лимитом."""
+
+    save_sum = 0.0
+
+    for transaction in transactions:
+        if transaction["date"][:7] == month and transaction["amount"] < 0:
+            save_sum += transaction["amount"] % limit
+
+    return save_sum
+
+
 if __name__ == "__main__":
     operations = utils.get_operations(os.path.join("data", "operations.xlsx"))
     if isinstance(operations, pd.DataFrame):
