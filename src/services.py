@@ -28,7 +28,7 @@ def get_good_cashback_categories(data: pd.DataFrame, year: int, month: int) -> d
     """Функция получает датафрейм с операциями, год и месяц для анализа,
     возвращает словарь с анализом, сколько кешбека можно было получить по каждой категории трат"""
 
-    first_next_month_day = datetime.datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d") + relativedelta(month=1)
+    first_next_month_day = datetime.datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d") + relativedelta(months=1)
     last_month_day = (first_next_month_day + datetime.timedelta(seconds=-1)).strftime("%Y-%m-%d")
 
     logger.info(f"Получаем список операций для месяца {month}.{year}")
@@ -51,4 +51,4 @@ def get_good_cashback_categories(data: pd.DataFrame, year: int, month: int) -> d
 if __name__ == "__main__":
     operations = utils.get_operations(os.path.join("data", "operations.xlsx"))
     if isinstance(operations, pd.DataFrame):
-        print(get_good_cashback_categories(operations, 2025, 12))
+        print(get_good_cashback_categories(operations, 2024, 6))

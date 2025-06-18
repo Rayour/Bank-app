@@ -132,22 +132,10 @@ def valute_rates(request: Any) -> Any:
     mocked_data = {
         "Valute": {
             "USD": {
-                "ID": "R01235",
-                "NumCode": "840",
-                "CharCode": "USD",
-                "Nominal": 1,
-                "Name": "Доллар США",
                 "Value": 78.7135,
-                "Previous": 78.5067
             },
             "EUR": {
-                "ID": "R01239",
-                "NumCode": "978",
-                "CharCode": "EUR",
-                "Nominal": 1,
-                "Name": "Евро",
                 "Value": 90.7548,
-                "Previous": 90.9438
             },
         }
     }
@@ -186,6 +174,29 @@ def company_share(request: Any) -> Any:
                 "mocked_data": mocked_data
             },
             "output": {'stock': 'GOOGL', 'price': 174.73}
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_cashback(request: Any) -> Any:
+    """Данные для тестирования функции src.services.get_good_cashback_categories"""
+
+    date1 = datetime.datetime.strptime("2025-12-01", "%Y-%m-%d")
+
+    tests = [
+        {
+            "input": (pd.DataFrame({
+                "Дата платежа": [date1, date1, date1, date1],
+                "Сумма платежа": [-200.0, 100.0, -400.0, -600.0],
+                "Категория": ["Супермаркеты", "Пополнения", "Переводы", "Рестораны"],
+                "Статус": ["OK", "OK", "OK", "FAILED"],
+            }), 2025, 12),
+            "output": {
+                "Супермаркеты": 2,
+                "Переводы": 4,
+            }
         }
     ]
     return tests[request.param]
