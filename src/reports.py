@@ -71,7 +71,7 @@ def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> 
     logger.info(
         f"Формируем отчет по тратам по дням недели в период с {start_date.strftime("%d.%m.%Y")} \
 по {end_date.strftime("%d.%m.%Y")}")
-    filtered_transactions_df["День недели"] = filtered_transactions_df["Дата платежа"].map(lambda x: x.strftime('%A'))
+    filtered_transactions_df.loc[:, ["День недели"]] = filtered_transactions_df["Дата платежа"].map(lambda x: x.strftime('%A'))
     current_df = filtered_transactions_df.loc[:, ["День недели", "Сумма платежа"]]
     spending_by_weekday_df = current_df.groupby("День недели").mean()
 
@@ -102,7 +102,7 @@ def spending_by_workday(transactions: pd.DataFrame, date: str | None = None) -> 
     logger.info(
         f"Формируем отчет по тратам по рабочим/выходным дням в период с {start_date.strftime("%d.%m.%Y")} \
 по {end_date.strftime("%d.%m.%Y")}")
-    filtered_transactions_df["Рабочий/выходной день"] = filtered_transactions_df["Дата платежа"].map(
+    filtered_transactions_df.loc[:, ["Рабочий/выходной день"]] = filtered_transactions_df["Дата платежа"].map(
         lambda x: "Выходной" if int(x.strftime('%w')) % 6 == 0 else "Рабочий"
     )
     current_df = filtered_transactions_df.loc[:, ["Рабочий/выходной день", "Сумма платежа"]]
