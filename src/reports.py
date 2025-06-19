@@ -43,7 +43,8 @@ def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> 
     filtered_transactions_df = transactions[
         (transactions["Сумма платежа"] < 0) &
         (transactions["Дата платежа"] > start_date) &
-        (transactions["Дата платежа"] <= end_date)
+        (transactions["Дата платежа"] <= end_date) &
+        (transactions["Статус"] == "OK")
         ]
     filtered_transactions_df["День недели"] = filtered_transactions_df["Дата платежа"].map(lambda x: x.strftime('%A'))
     current_df = filtered_transactions_df.loc[:, ["День недели", "Сумма платежа"]]
@@ -67,7 +68,8 @@ def spending_by_workday(transactions: pd.DataFrame, date: str | None = None) -> 
     filtered_transactions_df = transactions[
         (transactions["Сумма платежа"] < 0) &
         (transactions["Дата платежа"] > start_date) &
-        (transactions["Дата платежа"] <= end_date)
+        (transactions["Дата платежа"] <= end_date) &
+        (transactions["Статус"] == "OK")
         ]
     filtered_transactions_df["Рабочий/выходной день"] = filtered_transactions_df["Дата платежа"].map(
         lambda x: "Выходной" if int(x.strftime('%w')) % 6 == 0 else "Рабочий"
@@ -83,4 +85,4 @@ if __name__ == "__main__":
     if isinstance(df, pd.DataFrame):
         # print(spending_by_category(df, "Пополнения", "2025-12-12"))
         # print(spending_by_weekday(df).to_dict())
-        print(spending_by_workday(df))
+        print(spending_by_workday(df).to_dict())

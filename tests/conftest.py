@@ -256,3 +256,50 @@ def df_operations_for_spending_by_category(request: Any) -> Any:
         }
     ]
     return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_spending_groups() -> Any:
+    """Входные данные для тестирования функции src.reports.spending_by_weekday и src.reports.spending_by_workday"""
+
+    date1 = datetime.datetime.strptime("2025-12-15", "%Y-%m-%d")
+    date2 = datetime.datetime.strptime("2025-11-03", "%Y-%m-%d")
+    date3 = datetime.datetime.strptime("2025-11-04", "%Y-%m-%d")
+    date4 = datetime.datetime.strptime("2025-11-05", "%Y-%m-%d")
+    date5 = datetime.datetime.strptime("2025-11-06", "%Y-%m-%d")
+    date6 = datetime.datetime.strptime("2025-11-07", "%Y-%m-%d")
+    date7 = datetime.datetime.strptime("2025-11-08", "%Y-%m-%d")
+    date8 = datetime.datetime.strptime("2025-11-09", "%Y-%m-%d")
+    date9 = datetime.datetime.strptime("2025-11-10", "%Y-%m-%d")
+    date10 = datetime.datetime.strptime("2025-11-11", "%Y-%m-%d")
+    date11 = datetime.datetime.strptime("2025-11-12", "%Y-%m-%d")
+    date12 = datetime.datetime.strptime("2025-11-13", "%Y-%m-%d")
+    date13 = datetime.datetime.strptime("2025-11-14", "%Y-%m-%d")
+    date14 = datetime.datetime.strptime("2025-11-15", "%Y-%m-%d")
+    date15 = datetime.datetime.strptime("2025-11-16", "%Y-%m-%d")
+
+    df = pd.DataFrame({
+        "Дата платежа": [date1, date2, date3, date4, date5, date6, date7, date8, date9, date10, date11, date12, date13,
+                         date14, date14, date15, date15],
+        "Сумма платежа": [-200.0, -200.0, -200.0, -200.0, -200.0, -200.0, -200.0, -200.0, -100.0, -100.0, -100.0,
+                          -100.0, -100.0, -100.0, 100.0, -100.0, -100.0],
+        "Статус": ["OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK", "OK",
+                   "FAILED"],
+    })
+
+    return df, "2025-12-10"
+
+
+@pytest.fixture
+def output_data_for_report_by_weekdays() -> dict:
+    """Выходные данные для тестирования функции src.reports.spending_by_weekday"""
+    return {
+        'Сумма платежа': {'Friday': -150.0, 'Monday': -150.0, 'Saturday': -150.0,
+                          'Sunday': -150.0, 'Thursday': -150.0, 'Tuesday': -150.0,
+                          'Wednesday': -150.0}}
+
+
+@pytest.fixture
+def output_data_for_report_by_workdays() -> dict:
+    """Выходные данные для тестирования функции src.reports.spending_by_weekday"""
+    return {'Сумма платежа': {'Выходной': -150.0, 'Рабочий': -150.0}}
