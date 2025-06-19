@@ -71,7 +71,8 @@ def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> 
     logger.info(
         f"Формируем отчет по тратам по дням недели в период с {start_date.strftime("%d.%m.%Y")} \
 по {end_date.strftime("%d.%m.%Y")}")
-    filtered_transactions_df.loc[:, ["День недели"]] = filtered_transactions_df["Дата платежа"].map(lambda x: x.strftime('%A'))
+    filtered_transactions_df.loc[:, ["День недели"]] = \
+        filtered_transactions_df["Дата платежа"].map(lambda x: x.strftime('%A'))
     current_df = filtered_transactions_df.loc[:, ["День недели", "Сумма платежа"]]
     spending_by_weekday_df = current_df.groupby("День недели").mean()
 

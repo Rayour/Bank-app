@@ -235,6 +235,90 @@ def transactions_list(request: Any) -> Any:
 
 
 @pytest.fixture
+def df_operations_for_simple_search(request: Any) -> Any:
+    """Данные для тестирования функции src.services.simple_search"""
+
+    tests = [
+        {
+            "input": (pd.DataFrame({
+                "Категория": ["Супермаркеты", "Маркетплейсы", "Переводы", "Рестораны"],
+                "Описание": ["Перекресток", "Wildberries", "Мартышка", "Заглушка"],
+            }), "мар"),
+            "output": [
+                {
+                    "Категория": "Супермаркеты",
+                    "Описание": "Перекресток",
+                },
+                {
+                    "Категория": "Маркетплейсы",
+                    "Описание": "Wildberries",
+                },
+                {
+                    "Категория": "Переводы",
+                    "Описание": "Мартышка",
+                }
+            ]
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_phone_search(request: Any) -> Any:
+    """Данные для тестирования функции src.services.phone_search"""
+
+    tests = [
+        {
+            "input": pd.DataFrame({
+                "Описание": [
+                    "Я МТС +7 921 111-22-33",
+                    "Тинькофф Мобайл +7 995 555-55-55",
+                    "МТС Mobile +7 981 333-44-55",
+                    "Заглушка"
+                ],
+            }),
+            "output": [
+                {
+                    "Описание": "Я МТС +7 921 111-22-33",
+                },
+                {
+                    "Описание": "Тинькофф Мобайл +7 995 555-55-55",
+                },
+                {
+                    "Описание": "МТС Mobile +7 981 333-44-55",
+                }
+            ]
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
+def df_operations_for_individual_transfer_search(request: Any) -> Any:
+    """Данные для тестирования функции src.services.individual_transfer_search"""
+
+    tests = [
+        {
+            "input": pd.DataFrame({
+                "Категория": ["Переводы", "Переводы", "Переводы", "Рестораны"],
+                "Описание": ["Константинопольский К.", "Иванов И.", "В организацию", "Заглушка"],
+            }),
+            "output": [
+                {
+                    "Категория": "Переводы",
+                    "Описание": "Константинопольский К.",
+                },
+                {
+                    "Категория": "Переводы",
+                    "Описание": "Иванов И.",
+                }
+            ]
+        }
+    ]
+    return tests[request.param]
+
+
+@pytest.fixture
 def df_operations_for_spending_by_category(request: Any) -> Any:
     """Данные для тестирования функции src.reports.spending_by_category"""
 
