@@ -22,6 +22,8 @@ logger = logging.getLogger("decorators")
 
 
 def print_results(func: Callable) -> Callable:
+    """Функция-декоратор, выводит в консоль результат работы отчета, преобразуя его в словарь"""
+
     @wraps(func)
     def inner(*args: Any, **kwargs: Any) -> Any:
         try:
@@ -35,6 +37,9 @@ def print_results(func: Callable) -> Callable:
 
 
 def write_results(file_path: str) -> Callable:
+    """Функция-декоратор, преобразует результат отчета в словарь и записывает в файл,
+    расположенный по адресу file_path от корня проекта"""
+
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
