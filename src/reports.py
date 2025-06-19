@@ -1,11 +1,12 @@
 import datetime
-import os
 import logging
-import pandas as pd
-from dateutil.relativedelta import relativedelta
+import os
 from pathlib import Path
 
-from src import utils
+import pandas as pd
+from dateutil.relativedelta import relativedelta
+
+from src import decorators, utils
 
 ROOT_PATH = Path(__file__).resolve().parents[1]
 date_today = datetime.datetime.today().strftime("%d-%m-%Y")
@@ -23,6 +24,7 @@ logging.basicConfig(
 logger = logging.getLogger("reports")
 
 
+@decorators.print_results
 def spending_by_category(transactions: pd.DataFrame, category: str, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями, категорию операций и дату (опционально).
     Возвращает список транзакций указанной категории за 3 месяца до указанной даты.
@@ -46,6 +48,7 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: str | 
     return filtered_transactions_df
 
 
+@decorators.print_results
 def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями и опционально дату.
     Возвращает средний размер трат по дням недели за последние 3 месяца с указанной даты.
@@ -76,6 +79,7 @@ def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> 
     return spending_by_weekday_df
 
 
+@decorators.print_results
 def spending_by_workday(transactions: pd.DataFrame, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями и опционально дату.
     Возвращает средний размер трат по рабочим и выходнымдням недели за последние 3 месяца с указанной даты.
@@ -111,6 +115,6 @@ def spending_by_workday(transactions: pd.DataFrame, date: str | None = None) -> 
 if __name__ == "__main__":
     df = utils.get_operations(os.path.join('data', 'operations.xlsx'))
     if isinstance(df, pd.DataFrame):
-        print(spending_by_category(df, "Пополнения", "2025-12-12"))
-        print(spending_by_weekday(df).to_dict())
-        print(spending_by_workday(df).to_dict())
+        spending_by_category(df, "Пополнения", "2025-12-12")
+        spending_by_weekday(df)
+        spending_by_workday(df)
