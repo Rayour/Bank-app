@@ -62,36 +62,40 @@ def investment_bank(month: str, transactions: list[dict], limit: int) -> float:
     return save_sum
 
 
-def simple_search(df: pd.DataFrame, search_str: str) -> str:
+def simple_search(df_: pd.DataFrame, search_str: str) -> str:
     """Функция получает на вход датафрейм с транзакциями и строку для поиска.
     Возвращает json с транзакциями, в описании или категории которых найдено переданное значение."""
 
-    df["Совпадение_описание"] = df["Описание"].map(lambda x: bool(re.search(search_str, x, flags=re.IGNORECASE)))
-    df["Совпадение_категория"] = \
-        df["Категория"].map(lambda x: bool(re.search(search_str, str(x), flags=re.IGNORECASE)))
-    filtered_df = df[df["Совпадение_описание"] | df["Совпадение_категория"]].iloc[:, :-2]
+    logger.info(f"Формируем список транзакций с упоминанием {search_str} в категории или описании")
+    df_["Совпадение_описание"] = df_["Описание"].map(lambda x: bool(re.search(search_str, x, flags=re.IGNORECASE)))
+    df_["Совпадение_категория"] = \
+        df_["Категория"].map(lambda x: bool(re.search(search_str, str(x), flags=re.IGNORECASE)))
+    filtered_df = df_[df_["Совпадение_описание"] | df_["Совпадение_категория"]].iloc[:, :-2]
 
     return filtered_df.to_json(orient='records', force_ascii=False)
 
 
-def phone_search(df: pd.DataFrame) -> str:
+def phone_search(df_: pd.DataFrame) -> str:
     """Функция получает на вход датафрейм с транзакциями.
     Возвращает json с транзакциями, в описании которых найден номер телефона."""
 
-    df["Совпадение"] = df["Описание"].map(lambda x: bool(re.search(r"\+7\s\d{3}\s\d{3}-\d{2}-\d{2}", x)))
-    filtered_df = df[df["Совпадение"]].iloc[:, :-1]
+    logger.info("Формируем список транзакций номерами телефонов")
+    df_["Совпадение"] = df_["Описание"].map(lambda x: bool(re.search(r"\+7\s\d{3}\s\d{3}-\d{2}-\d{2}", x)))
+    filtered_df = df_[df_["Совпадение"]].iloc[:, :-1]
+
     return filtered_df.to_json(orient='records', force_ascii=False)
 
 
-def individual_transfer_search(df: pd.DataFrame) -> str:
+def individual_transfer_search(df_: pd.DataFrame) -> str:
     """Функция получает на вход датафрейм с транзакциями.
     Возвращает json с транзакциями категории "Переводы", в описании которых найдена фамилия и первая буква имени."""
 
-    df_transfers = df[df["Категория"] == "Переводы"]
-    df_transfers.loc[:, ["Совпадение"]] = df["Описание"].map(lambda x: bool(re.match(r"^[А-Яа-яЁё]+\s[А-Я]{1}\.$", x)))
-    print(df_transfers)
+    logger.info("Формируем список транзакций с переводами физическим лицам")
+    df_transfers = df_[df_["Категория"] == "Переводы"]
+    df_transfers.loc[:, ["Совпадение"]] = \
+        df_["Описание"].map(lambda x: bool(re.match(r"^[А-Яа-яЁё]+\s[А-Я]{1}\.$", x)))
     filtered_df = df_transfers[df_transfers["Совпадение"]].iloc[:, :-1]
-    print(filtered_df)
+
     return filtered_df.to_json(orient='records', force_ascii=False)
 
 
