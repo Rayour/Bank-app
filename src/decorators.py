@@ -23,20 +23,21 @@ logger = logging.getLogger("decorators")
 
 def print_results(func: Callable) -> Callable:
     @wraps(func)
-    def inner(*args: Any, **kwargs: Any) -> None:
+    def inner(*args: Any, **kwargs: Any) -> Any:
         try:
             result = func(*args, **kwargs)
             print(result.to_dict())
             logger.info(f"Результат работы отчета {func.__name__} выведен в консоль")
         except Exception as e:
             logger.critical(f"Работа отчета {func.__name__} завершилась с ошибкой: {e}")
+        return result
     return inner
 
 
 def write_results(file_path: str) -> Callable:
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def inner(*args: Any, **kwargs: Any) -> None:
+        def inner(*args: Any, **kwargs: Any) -> Any:
             result = func(*args, **kwargs)
             full_file_path = os.path.join(ROOT_PATH, file_path)
             try:
@@ -47,5 +48,6 @@ def write_results(file_path: str) -> Callable:
                 logger.critical(
                     f"Не удается записать результат отчета {func.__name__} в файл {full_file_path}. Ошибка: {e}"
                 )
+            return result
         return inner
     return wrapper

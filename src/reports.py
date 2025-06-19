@@ -24,7 +24,6 @@ logging.basicConfig(
 logger = logging.getLogger("reports")
 
 
-@decorators.print_results
 def spending_by_category(transactions: pd.DataFrame, category: str, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями, категорию операций и дату (опционально).
     Возвращает список транзакций указанной категории за 3 месяца до указанной даты.
@@ -48,7 +47,7 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: str | 
     return filtered_transactions_df
 
 
-@decorators.print_results
+@decorators.write_results(os.path.join("reports", f"{datetime.datetime.now().strftime("%Y-%m-%d")}.txt"))
 def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями и опционально дату.
     Возвращает средний размер трат по дням недели за последние 3 месяца с указанной даты.
