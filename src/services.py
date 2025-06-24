@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -62,6 +63,26 @@ def investment_bank(month: str, transactions: list[dict], limit: int) -> float:
     return save_sum
 
 
+def investment_bank_df(df_: pd.DataFrame, month: str, limit: int) -> Any:
+    """Функция получает датафрейм со списком транзакций, месяц ('YYYY-MM') и лимит округления.
+    Возвращает сумму, которую можно было бы накопить за данный месяц с указанным лимитом."""
+
+    first_next_month_day = datetime.datetime.strptime(f"{month}-01", "%Y-%m-%d") + relativedelta(months=1)
+    last_month_day = (first_next_month_day + datetime.timedelta(seconds=-1)).strftime("%Y-%m-%d")
+
+    logger.info(f"Получаем список операций для месяца {month}")
+    current_month_df = utils.get_df_by_dates(df_, last_month_day)
+
+    logger.info(f"Получаем список расходов для месяца {month}")
+    spend_operations_df = current_month_df[
+        (current_month_df["Статус"] == "OK") & (current_month_df["Сумма платежа"] < 0)]
+
+    logger.info(f"Рассчитываем накопления за месяц {month}")
+    spend_operations_df.loc[:, ["Накопления"]] = spend_operations_df["Сумма платежа"].map(lambda x: x % limit)
+    save_amount = spend_operations_df["Накопления"].sum()
+    return save_amount
+
+
 def simple_search(df_: pd.DataFrame, search_str: str) -> str:
     """Функция получает на вход датафрейм с транзакциями и строку для поиска.
     Возвращает json с транзакциями, в описании или категории которых найдено переданное значение."""
@@ -107,4 +128,4 @@ if __name__ == "__main__":
     if isinstance(df, pd.DataFrame):
         # print(simple_search(df, "марк"))
         # print(phone_search(df))
-        print(individual_transfer_search(df))
+        print(investment_bank_df(df, '2025-12', 100))

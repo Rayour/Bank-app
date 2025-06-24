@@ -387,3 +387,23 @@ def output_data_for_report_by_weekdays() -> dict:
 def output_data_for_report_by_workdays() -> dict:
     """Выходные данные для тестирования функции src.reports.spending_by_weekday"""
     return {'Сумма платежа': {'Выходной': -150.0, 'Рабочий': -150.0}}
+
+
+@pytest.fixture
+def df_operations_for_invest_bank() -> Any:
+    """Входные данные для тестирования функции src.reports.spending_by_weekday и src.reports.investment_bank_df"""
+
+    date1 = datetime.datetime.strptime("2025-12-15", "%Y-%m-%d")
+    date2 = datetime.datetime.strptime("2025-11-03", "%Y-%m-%d")
+    date3 = datetime.datetime.strptime("2025-11-04", "%Y-%m-%d")
+    date4 = datetime.datetime.strptime("2025-11-05", "%Y-%m-%d")
+    date5 = datetime.datetime.strptime("2025-11-06", "%Y-%m-%d")
+    date6 = datetime.datetime.strptime("2025-11-07", "%Y-%m-%d")
+
+    df = pd.DataFrame({
+        "Дата платежа": [date1, date2, date3, date4, date5, date6],
+        "Сумма платежа": [-105.0, -110.0, -115.0, -120.0, 200.0, -200.0],
+        "Статус": ["OK", "OK", "OK", "OK", "OK", "FAILED"],
+    })
+
+    return {"input": (df, "2025-11", 50), "output": 105.0}

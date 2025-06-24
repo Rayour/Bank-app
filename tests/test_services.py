@@ -17,6 +17,11 @@ def test_investment_bank(transactions_list: Any) -> None:
     assert src.services.investment_bank(*transactions_list["input"]) == transactions_list["output"]
 
 
+def test_investment_bank_df(df_operations_for_invest_bank: Any) -> None:
+    assert src.services.investment_bank_df(*df_operations_for_invest_bank["input"]) == \
+           df_operations_for_invest_bank["output"]
+
+
 @pytest.mark.parametrize("df_operations_for_simple_search", [i for i in range(1)], indirect=True)
 def test_simple_search(df_operations_for_simple_search: Any) -> None:
     assert json.loads(src.services.simple_search(*df_operations_for_simple_search["input"])) == \
