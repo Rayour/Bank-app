@@ -88,10 +88,11 @@ def simple_search(df_: pd.DataFrame, search_str: str) -> str:
     Возвращает json с транзакциями, в описании или категории которых найдено переданное значение."""
 
     logger.info(f"Формируем список транзакций с упоминанием {search_str} в категории или описании")
-    df_["Совпадение_описание"] = df_["Описание"].map(lambda x: bool(re.search(search_str, x, flags=re.IGNORECASE)))
-    df_["Совпадение_категория"] = \
-        df_["Категория"].map(lambda x: bool(re.search(search_str, str(x), flags=re.IGNORECASE)))
-    filtered_df = df_[df_["Совпадение_описание"] | df_["Совпадение_категория"]].iloc[:, :-2]
+    data = df_
+    data["Совпадение_описание"] = data["Описание"].map(lambda x: bool(re.search(search_str, x, flags=re.IGNORECASE)))
+    data["Совпадение_категория"] = \
+        data["Категория"].map(lambda x: bool(re.search(search_str, str(x), flags=re.IGNORECASE)))
+    filtered_df = data[data["Совпадение_описание"] | data["Совпадение_категория"]].iloc[:, :-2]
 
     return filtered_df.to_json(orient='records', force_ascii=False)
 
@@ -101,8 +102,9 @@ def phone_search(df_: pd.DataFrame) -> str:
     Возвращает json с транзакциями, в описании которых найден номер телефона."""
 
     logger.info("Формируем список транзакций номерами телефонов")
-    df_["Совпадение"] = df_["Описание"].map(lambda x: bool(re.search(r"\+7\s\d{3}\s\d{3}-\d{2}-\d{2}", x)))
-    filtered_df = df_[df_["Совпадение"]].iloc[:, :-1]
+    data = df_
+    data["Совпадение"] = data["Описание"].map(lambda x: bool(re.search(r"\+7\s\d{3}\s\d{3}-\d{2}-\d{2}", x)))
+    filtered_df = data[data["Совпадение"]].iloc[:, :-1]
 
     return filtered_df.to_json(orient='records', force_ascii=False)
 

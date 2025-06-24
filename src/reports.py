@@ -79,7 +79,7 @@ def spending_by_weekday(transactions: pd.DataFrame, date: str | None = None) -> 
     return spending_by_weekday_df
 
 
-@decorators.print_results
+@decorators.write_results(os.path.join("reports", f"{datetime.datetime.now().strftime("%Y-%m-%d")}.txt"))
 def spending_by_workday(transactions: pd.DataFrame, date: str | None = None) -> pd.DataFrame:
     """Функция получает на вход датафрейм с транзакциями и опционально дату.
     Возвращает средний размер трат по рабочим и выходнымдням недели за последние 3 месяца с указанной даты.
